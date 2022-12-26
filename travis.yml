@@ -1,0 +1,23 @@
+# Rename this file .travis.yml
+language: generic 
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t arjunank/docker_react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true arjunank/docker_react npm test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-south-1"
+  app: "docker_react"
+  env: "Dockerreact-env"
+  bucket_name: $EXISTING_BUCKET_NAME
+  bucket_path: "docker_react"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
